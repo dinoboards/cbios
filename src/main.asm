@@ -2725,7 +2725,7 @@ key_in:
                 in      a,(GIO_REGS)
                 and     $F0
                 ld      c,a
-                ld      b,$0B
+                ld      b,11
                 ld      hl,NEWKEY
 key_in_lp:
                 ld      a,c
@@ -2738,20 +2738,16 @@ key_in_lp:
 
                 ld      ix,OLDKEY
                 ld      de,NEWKEY
+                ; Use plain or SHIFT version of rows 0-5?
+                ; Note that while we have tables for GRAPH and CODE variants,
+                ; those are not used yet by this routine.
                 ld      a,(NEWKEY + 6)
                 rrca
-                jr      nc,code_shift
                 ld      hl,scode_tbl
-                jr      scan_start
-code_shift:
+                jr      c,scan_start
                 ld      hl,scode_tbl_shift
-
 scan_start:
-                ld      c,$06                           ; check 'normal' keys
-                call    key_chk_lp                      ; (rows 0-5)
-                ld      hl,scode_tbl_otherkeys          ; check rest (rows 6-11)
-                ld      c,$05
-
+                ld      c,11
 key_chk_lp:
                 ld      a,(de)
                 cp      (ix+0)
@@ -2774,8 +2770,15 @@ key_bit_next:
                 inc     ix
                 inc     de
                 dec     c
+                ret     z
+                ld      a,c
+                cp      5
                 jr      nz,key_chk_lp
-                ret
+                ; Switch to new table for rows 6-11.
+                ; These rows produce the same characters regardless of which
+                ; modifier keys are held.
+                ld      hl,scode_tbl_otherkeys
+                jr      key_chk_lp
 
 key_set_delay:
                 ; Set the auto-repeat delay.
