@@ -2747,10 +2747,10 @@ code_shift:
                 ld      hl,scode_tbl_shift
 
 scan_start:
-                ld      b,$06                           ; check 'normal' keys
+                ld      c,$06                           ; check 'normal' keys
                 call    key_chk_lp                      ; (rows 0-5)
                 ld      hl,scode_tbl_otherkeys          ; check rest (rows 6-11)
-                ld      b,$05
+                ld      c,$05
 
 key_chk_lp:
                 ld      a,(de)
@@ -2764,17 +2764,17 @@ key_chk_lp:
                 ex      af,af'
                 ; TODO: Optimise scanning if no keys are pressed.
                 ;       That's the most common case by far.
-                ld      c,$08
+                ld      b,$08
 key_bit_lp:
                 rrca
                 jr      c,key_store
 key_bit_next:
                 inc     hl
-                dec     c
-                jr      nz,key_bit_lp
+                djnz    key_bit_lp
                 inc     ix
                 inc     de
-                djnz    key_chk_lp
+                dec     c
+                jr      nz,key_chk_lp
                 ret
 
 key_set_delay:
@@ -2787,7 +2787,7 @@ key_set_delay:
 
 key_store:
                 push    af
-                ld      a,b
+                ld      a,c
 
                 cp      $05
                 jr      z,key_chk_fnk1
@@ -2798,7 +2798,7 @@ key_store:
 ; Put function string into buffer
 key_chk_fnk1:
                 ; F1-F3
-                ld      a,c
+                ld      a,b
                 cp      $03 ; F1
                 jr      nz,key_chk_f2
                 ld      a,$00
@@ -2815,7 +2815,7 @@ key_chk_f3:
                 jr      put_key_fnk
 key_chk_fnk2:
                 ; F4-F5
-                ld      a,c
+                ld      a,b
                 cp      $08 ; F4
                 jr      nz,key_chk_f5
                 ld      a,$03
