@@ -2748,9 +2748,9 @@ code_shift:
 
 scan_start:
                 ld      b,$06                           ; check 'normal' keys
-                                call    key_chk_lp                              ; (rows 0-5)
-                                ld              hl,scode_tbl_otherkeys  ; check rest (rows 6-11)
-                                ld              b,$05
+                call    key_chk_lp                      ; (rows 0-5)
+                ld      hl,scode_tbl_otherkeys          ; check rest (rows 6-11)
+                ld      b,$05
 
 key_chk_lp:
                 ld      a,(de)
@@ -2758,7 +2758,7 @@ key_chk_lp:
                 call    nz,key_set_delay
                 cpl
                 and     (ix+0)
-                ex      af,af'          ; Update OLDKEY.
+                ex      af,af'                          ; Update OLDKEY.
                 ld      a,(de)
                 ld      (ix+0),a
                 ex      af,af'
