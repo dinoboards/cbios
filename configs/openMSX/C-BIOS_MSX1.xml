@@ -6,7 +6,7 @@
     <manufacturer>C-BIOS</manufacturer>
     <code>MSX1</code>
     <release_year>2003</release_year>
-    <description>An MSX1 machine using C-BIOS, with an international keyboard layout and 50Hz interrupt frequency.</description>
+    <description>An MSX1 machine using C-BIOS, with an international keyboard layout and 60Hz interrupt frequency.</description>
     <type>MSX</type>
   </info>
 
@@ -57,7 +57,7 @@
     <VDP id="VDP">
       <io base="0x98" num="2" type="O"/>
       <io base="0x98" num="2" type="I"/>
-      <version>TMS9929A</version>
+      <version>TMS9918A</version>
       <vram>16</vram>
     </VDP>
 

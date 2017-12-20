@@ -1,4 +1,4 @@
-; C-BIOS main ROM for an International MSX1 machine
+; C-BIOS main ROM for a European MSX2+ machine
 ;
 ; Copyright (c) 2005 Maarten ter Huurne.  All rights reserved.
 ; Copyright (c) 2005 Joost Yervante Damad.  All rights reserved.
@@ -28,14 +28,14 @@
 
                 include "hardware.asm"
 
-VDP:            equ     TMS99X8
-MODEL_MSX:      equ     MODEL_MSX1
+VDP:            equ     V9958
+MODEL_MSX:      equ     MODEL_MSX2P
 
-; -- generic international config (60Hz, US keyboard layout)
+; -- generic european config (50Hz, US keyboard layout)
 LOCALE_CHSET:   equ     LOCAL_CHSET_US
 LOCALE_CHSET_VAR: equ   LOCAL_CHSET_VAR_NONE
 LOCALE_DATE:    equ     LOCAL_DATE_DMY
-LOCALE_INT:     equ     LOCAL_INT_60HZ
+LOCALE_INT:     equ     LOCAL_INT_50HZ
 LOCALE_KBD:     equ     LOCAL_KBD_US
 LOCALE_BASIC:   equ     LOCAL_BASIC_US
 
@@ -43,7 +43,7 @@ COLOR_FORE:     equ     15
 COLOR_BACK:     equ     4
 COLOR_BORDER:   equ     4
 
-CALL_SUB:       equ     NO
+CALL_SUB:       equ     YES
 
                 include "main.asm"
 

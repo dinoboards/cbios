@@ -6,7 +6,7 @@
     <manufacturer>C-BIOS</manufacturer>
     <code>MSX2+</code>
     <release_year>2005</release_year>
-    <description>An MSX2+ machine using C-BIOS, with MSX-MUSIC, an international keyboard layout and 60Hz interrupt frequency.</description>
+    <description>An MSX2+ machine using C-BIOS, with MSX-MUSIC, an international keyboard layout and 50Hz interrupt frequency.</description>
     <type>MSX2+</type>
   </info>
 
@@ -20,8 +20,8 @@
       <ROM id="C-BIOS Main ROM">
         <mem base="0x0000" size="0x8000"/>
         <rom>
-          <!--sha1:cbios_main_msx2+.rom-->
-          <filename>cbios_main_msx2+.rom</filename>
+          <!--sha1:cbios_main_msx2+_eu.rom-->
+          <filename>cbios_main_msx2+_eu.rom</filename>
         </rom>
       </ROM>
 
