@@ -9,11 +9,6 @@ mkdir derived\configs\blueMSX\Machines 2>nul
 xcopy configs\blueMSX\*.* derived\configs\blueMSX\Machines /s /e /y >nul
 del derived\configs\blueMSX\Machines\README.TXT
 
-echo Setting up NLMSX configs
-mkdir derived\configs\NLMSX\ROMS 2>nul
-xcopy configs\NLMSX\*.* derived\configs\NLMSX /s /e /y >nul
-del derived\configs\NLMSX\README.TXT
-
 echo Setting up RuMSX configs
 mkdir derived\configs\RuMSX\SYSTEM 2>nul
 xcopy configs\RuMSX\*.* derived\configs\RuMSX /s /e /y >nul
@@ -78,10 +73,6 @@ copy "derived\bin\cbios_main_msx2+_br.rom" "derived\configs\blueMSX\Machines\MSX
 copy "derived\bin\cbios_sub.rom" "derived\configs\blueMSX\Machines\MSX2+ - C-BIOS - BR" /y >nul
 copy "derived\bin\cbios_music.rom" "derived\configs\blueMSX\Machines\MSX2+ - C-BIOS - BR" /y >nul
 rem copy "derived\bin\cbios_disk.rom" "derived\configs\blueMSX\Machines\MSX2 - C-BIOS" /y >nul
-
-echo - NLMSX
-rem copy derived\bin\cbios_disk.rom "derived\configs\blueMSX\Machines\MSX2+ - C-BIOS" /y >nul
-copy "derived\bin\cbios_*.rom" "derived\configs\NLMSX\ROMS" /y >nul
 
 echo - RuMSX
 copy "derived\bin\cbios_*.rom" "derived\configs\RuMSX\SYSTEM" /y >nul
