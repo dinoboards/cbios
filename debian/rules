@@ -47,7 +47,6 @@ install: build
 	# copy rom files
 	cp -f derived/bin/*.rom $(CURDIR)/debian/cbios/usr/share/cbios
 	# copy config files for other emulators # currently not done!
-	# cp -rf configs/NLMSX $(CURDIR)/debian/cbios/usr/share/cbios/configs
 	# cp -rf configs/RuMSX $(CURDIR)/debian/cbios/usr/share/cbios/configs
 	# cp -rf configs/blueMSX $(CURDIR)/debian/cbios/usr/share/cbios/configs
 	# prepare for openMSX specially
