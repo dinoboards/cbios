@@ -3121,7 +3121,6 @@ str_proginfo:
                 ;db     "C-BIOS 1.23      cbios.sf.net"
                 include "../derived/asm/version.asm"
                 db      $0D,$0A
-                db      "Localization: "
                 include "locale.asm"
                 db      $0D,$0A,$0D,$0A,$00
 str_proginfo_length:    equ     $ - str_proginfo
