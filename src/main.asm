@@ -951,8 +951,15 @@ search_roms_check:
                 pop     hl
                 ret
 
-                ; Initialize the ROM and set up the related system variables.
+;	Ensure A is protected during rom initialisation
 search_roms_init:
+		push	af
+		call	_search_roms_init
+		pop	af
+		ret
+
+                ; Initialize the ROM and set up the related system variables.
+_search_roms_init:
                 ; Output a message to show that a ROM is found.
                 push    hl
                 push    af
