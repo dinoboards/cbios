@@ -769,6 +769,9 @@ chkram_select:
 
                 call    init_vdp
 
+		; Why was this missing?
+		im	1
+
                 ei
 
                 call    initio
@@ -906,12 +909,19 @@ search_roms_lp:
                 push    hl
                 or      (hl)
 search_roms_lp_sub:
-                ld      hl,$4000
+                ; ld      hl,$4000
+                ; call    search_roms_check
+                ; call    z,search_roms_init
+
+		ld	hl,$4000
+		; HACK FOR RC2014!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		ld	(hl), $08
                 call    search_roms_check
                 call    z,search_roms_init
-                ld      hl,$8000
-                call    search_roms_check
-                call    z,search_roms_init
+
+                ; ld      hl,$8000
+                ; call    search_roms_check
+                ; call    z,search_roms_init
 search_roms_no:
                 bit     7,a
                 jr      z,search_roms_next_slot
@@ -994,6 +1004,8 @@ search_roms_init_skip:
                 ; Read the initialization address and initialize the ROM.
                 inc     hl
                 inc     hl
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
                 call    search_roms_address
                 jr      z,search_roms_init_statement
 

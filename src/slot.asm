@@ -123,6 +123,11 @@ wrslt:
 ;            of the Z-80 or IX and IY
 
 calslt:
+		ld	d,d
+		jr	skip
+		db	"CALSLT"
+skip:
+
                 ex      af,af'
                 exx
 

@@ -67,7 +67,9 @@ wrtvdp:
                 out     (VDP_ADDR),a
                 ld      a,c
                 or      $80
-                out     (VDP_ADDR),a
+                nop
+		nop
+		out     (VDP_ADDR),a
                 ei
 
                 push    hl
@@ -140,14 +142,18 @@ setrd:
                 xor     a
                 out     (VDP_ADDR),a
                 ld      a,128+14
-                out     (VDP_ADDR),a
+		out     (VDP_ADDR),a
+	nop
+	nop
         ENDIF
 
                 ld      a,l
                 out     (VDP_ADDR),a
                 ld      a,h
                 and     $3F
-                out     (VDP_ADDR),a
+	nop
+	nop
+	        out     (VDP_ADDR),a
                 ei
                 ret
 
@@ -162,15 +168,21 @@ setwrt:
                 xor     a
                 out     (VDP_ADDR),a
                 ld      a,128+14
+	nop
+	nop
                 out     (VDP_ADDR),a
-        ENDIF
+	nop
+	nop
+	ENDIF
 
                 ld      a,l
                 out     (VDP_ADDR),a
                 ld      a,h
                 and     $3F
                 or      $40
-                out     (VDP_ADDR),a
+	nop
+	nop
+	        out     (VDP_ADDR),a
                 ei
                 ret
 
@@ -212,6 +224,9 @@ filvrm_cont:
                 ;       memory block written is large enough.
 filvrm_lp:
                 out     (VDP_DATA),a
+	nop
+	nop
+
         IF VDP = TMS99X8
                 ; wait (at least) 29 t-states between VRAM accesses
                 dec b
@@ -254,13 +269,15 @@ ldirmv_cont:
                 inc     a
                 ld      c,VDP_DATA
 ldirmv_lp:
-        IF VDP = TMS99X8
+        ; IF VDP = TMS99X8
                 ; wait (at least) 29 t-states between VRAM accesses
                 ini
+		nop
+		nop
                 jp nz, ldirmv_lp
-        ELSE
-                inir
-        ENDIF
+        ; ELSE
+                ; inir
+        ; ENDIF
                 dec     a
                 jr      nz,ldirmv_lp
                 pop     hl
@@ -296,13 +313,15 @@ ldirvm_cont:
                 inc     a
                 ld      c,VDP_DATA
 ldirvm_lp:
-        IF VDP = TMS99X8
+        ; IF VDP = TMS99X8
                 ; wait (at least) 29 t-states between VRAM accesses
                 outi
-                jp nz, ldirvm_lp
-        ELSE
-                otir
-        ENDIF
+	nop
+	nop
+	        jp nz, ldirvm_lp
+        ; ELSE
+                ; otir
+        ; ENDIF
                 dec     a
                 jr      nz,ldirvm_lp
                 ; Note: Without this, Quinpl shows glitches.
@@ -376,6 +395,9 @@ chgmod_finish_lines_end:
 chgmod_finish_lp:
                 outi
                 ld      a,b
+	nop
+	nop
+
                 out     (c),d
                 inc     d
                 or      a
@@ -385,12 +407,24 @@ chgmod_finish_lp:
                 ; Setup indirect access to R#8, auto-increment.
                 ld      a,8
                 out     (VDP_ADDR),a
+	nop
+	nop
                 ld      a,$80 + 17
                 out     (VDP_ADDR),a
+	nop
+	nop
                 ; Write R#8 - R#14.
                 ld      hl,RG8SAV
                 ld      bc,7 * $100 + VDP_REGS
-                otir
+
+loop1:
+                outi
+	nop
+	nop
+	        jp nz, loop1
+
+
+                ; otir
                 ; Skip these registers:
                 inc     hl              ; R#15: status register selection
                 inc     hl              ; R#16: palette index register
@@ -398,11 +432,23 @@ chgmod_finish_lp:
                 ; Setup indirect access to R#18, auto-increment.
                 ld      a,18
                 out     (VDP_ADDR),a
+	nop
+		nop
                 ld      a,$80 + 17
                 out     (VDP_ADDR),a
+	nop
+	nop
                 ; Write R#18 - R#23.
                 ld      bc,6 * $100 + VDP_REGS
-                otir
+                ; otir
+
+loop2:
+                outi
+	nop
+	nop
+	        jp nz, loop2
+
+
         ENDIF
                 ei
                 jp      enascr
@@ -541,17 +587,17 @@ clrspr_attr_lp:
                 ld      a,e
                 out     (VDP_DATA),a    ; Y coordinate
                 ld      a,0
-        IF VDP = TMS99X8
+        ; IF VDP = TMS99X8
                 nop                     ; wait (at least) 29 t-states between VRAM accesses
                 nop                     ; only 2 nops, as ld a,0 is slow
-        ENDIF
+        ; ENDIF
                 out     (VDP_DATA),a    ; X coordinate
                 ld      a,c
-        IF VDP = TMS99X8
+        ; IF VDP = TMS99X8
                 nop                     ; wait (at least) 29 t-states between VRAM accesses
                 nop
                 nop
-        ENDIF
+        ; ENDIF
                 out     (VDP_DATA),a    ; pattern number
                 inc     c
                 call    gspsiz
@@ -562,6 +608,8 @@ clrspr_attr_lp:
 clrspr_attr_8:
                 ld      a,d
                 out     (VDP_DATA),a    ; color
+	nop
+	nop
                 djnz    clrspr_attr_lp
                 ei
                 ret
@@ -709,6 +757,8 @@ inigrp:
                 di
 inigrp_lp:
                 out     (VDP_DATA),a
+	nop
+	nop
                 inc     a
                 jr      nz,inigrp_lp
                 djnz    inigrp_lp
@@ -768,6 +818,8 @@ inimlt_loop2:
                 ld      b,32
 inimlt_loop3:
                 out     (VDP_DATA),a
+	nop
+	nop
                 inc     a
                 djnz    inimlt_loop3
                 pop     af
@@ -1374,6 +1426,8 @@ bigfil:
                 di
 bigfil_lp:
                 out     (VDP_DATA),a
+	nop
+	nop
                 djnz    bigfil_lp
                 dec     c
                 jr      nz,bigfil_lp
@@ -1441,9 +1495,13 @@ nset_32k:       push    hl
                 di
                 out     (VDP_ADDR),a    ; A16..A14
                 ld      a,$8E
+	nop
+	nop
                 out     (VDP_ADDR),a    ; R#14
                 pop     hl
                 ld      a,l
+	nop
+	nop
                 out     (VDP_ADDR),a    ; A7..A0
                 ret
 
@@ -1492,14 +1550,20 @@ vdpsta:
                 ; Select desired status register.
                 out     (VDP_ADDR),a
                 ld      a,$80 + 15
+	nop
+	nop
                 out     (VDP_ADDR),a
                 ; Read status register.
                 in      a,(VDP_STAT)
                 push    af
                 ; Restore status register 0.
                 xor     a
+	nop
+	nop
                 out     (VDP_ADDR),a
                 ld      a,$80 + 15
+	nop
+	nop
                 out     (VDP_ADDR),a
                 ei
                 pop     af
@@ -1627,6 +1691,8 @@ init_sc4:
                 di
 init_sc4_lp:
                 out     (VDP_DATA),a
+	nop
+	nop
                 inc     a
                 jr      nz,init_sc4_lp
                 djnz    init_sc4_lp
@@ -2085,7 +2151,9 @@ cls_wrtvdp:     di
                 out     (VDP_ADDR),a
                 ld      a,c
                 or      $80
-                out     (VDP_ADDR),a
+                nop
+                nop
+		out     (VDP_ADDR),a
                 ei
                 ret
 
