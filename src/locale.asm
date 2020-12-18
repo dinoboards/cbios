@@ -20,6 +20,9 @@
                 db     "5"
         ENDIF
         db      "0Hz"
+if INIT_80COLS
+	db 13, 10
+endif
         ; the text fits exactly a line for non-MSX1 VDP
         IF VDP = TMS99X8
                 db      $0D,$0A
@@ -40,13 +43,7 @@
         IF LOCALE_KBD = LOCAL_KBD_JP
                 db      "JP"
         ENDIF
+if !INIT_80COLS
         db      $0D,$0A
-        ;BASIC type is not very interesting without BASIC
-        ;db      "BASIC type: "
-        ;IF LOCALE_BASIC = LOCAL_BASIC_US
-        ;        db      "US"
-        ;ENDIF
-        ;IF LOCALE_BASIC = LOCAL_BASIC_JP
-        ;        db      "JP"
-        ;ENDIF
         db      $0D,$0A
+endif

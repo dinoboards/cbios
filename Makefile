@@ -11,7 +11,7 @@ PACKAGE_FULL:=$(PACKAGE_NAME)-$(VERSION)
 TITLE:="C-BIOS $(VERSION)      cbios.sf.net"
 VERSION_FILE:=derived/asm/version.asm
 
-ROMS:=main_msx1 main_msx1_eu main_msx1_jp main_msx1_br \
+ROMS:=main_rc2014_pal main_rc2014_ntsc main_msx1 main_msx1_eu main_msx1_jp main_msx1_br \
 	main_msx2 main_msx2_eu main_msx2_jp main_msx2_br main_msx2+ \
 	main_msx2+_eu main_msx2+_jp main_msx2+_br sub logo_msx1 logo_msx2 \
 	logo_msx2+ music disk basic
