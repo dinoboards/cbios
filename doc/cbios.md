@@ -1,4 +1,4 @@
-C-BIOS 0.29
+# C-BIOS 0.29
 ===========
 
 This software is a substitute BIOS which is can be used for running MSX
@@ -11,7 +11,7 @@ code, and report bugs.
 http://cbios.sourceforge.net/
 
 
-License
+## License
 -------
 
 Copyright (c) 2002-2005 BouKiCHi.  All rights reserved.
@@ -48,6 +48,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 History
 -------
 
+```
 ver 0.01  Initial
 ver 0.02  2002-08-15(JST)
           * Added original font and drawing screen.
@@ -217,8 +218,9 @@ ver 0.29  2018-02-18(CET)
             at 50Hz default interrupt frequency
 ver 0.29a 2018-09-23(CEST)
           * Fixed metadata in openMSX configs for EU machines
+```
 
-Special Thanks
+# Special Thanks
 --------------
 
 People uploading MSX information to the internet.
