@@ -804,7 +804,14 @@ logo_none:
                 ld      a,5
                 ld      (BAKCLR),a
                 ld      (BDRCLR),a
-                call    init32
+
+if INIT_80COLS
+		ld      a,79
+                ld      (LINL40),a
+                call    initxt
+else
+		call    init32
+endif
                 ld      hl,str_proginfo
                 call    prn_text
 
@@ -860,6 +867,13 @@ vramsize_done:
                 ld      ix,$0141 ; call INIPLT
                 call    extrom
         ENDIF
+if INIT_80COLS
+		ld      a,79
+                ld      (LINL40),a
+                call    initxt
+else
+		call    init32
+endif
 
                 ld      hl,str_proginfo
                 call    prn_text
@@ -909,19 +923,21 @@ search_roms_lp:
                 push    hl
                 or      (hl)
 search_roms_lp_sub:
-                ; ld      hl,$4000
-                ; call    search_roms_check
-                ; call    z,search_roms_init
 
-		ld	hl,$4000
+if ! RC2014
+		ld      hl,$4000
+		call    search_roms_check
+		call    z,search_roms_init
+                ld      hl,$8000
+                call    search_roms_check
+                call    z,search_roms_init
+else
 		; HACK FOR RC2014!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		ld	hl,$4000
 		ld	(hl), $08
                 call    search_roms_check
                 call    z,search_roms_init
-
-                ; ld      hl,$8000
-                ; call    search_roms_check
-                ; call    z,search_roms_init
+endif
 search_roms_no:
                 bit     7,a
                 jr      z,search_roms_next_slot

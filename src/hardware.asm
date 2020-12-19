@@ -120,4 +120,8 @@ LOCAL_BASIC_US  equ     $01
 YES:            equ     1
 NO:             equ     0
 
+INIT_80COLS	DEFL	0
+RC2014		DEFL	0
+
+
 ; vim:ts=8:expandtab:filetype=z8a:syntax=z8a:
