@@ -922,24 +922,13 @@ search_roms_lp:
                 or      (hl)
 search_roms_lp_sub:
 
-if ! RC2014
 		ld      hl,$4000
 		call    search_roms_check
 		call    z,search_roms_init
                 ld      hl,$8000
                 call    search_roms_check
                 call    z,search_roms_init
-else
-	; THE CURRENT MSX MEMORY BOARD FOR RC2014 DUPLICATE THE PAGE 4000 TO 8000
-	; SO ITS POSSIBLE TO SEE THE ROM TWICE IF WE SCAN AT 8000
-		ld	hl, $4000
 
-	; THE ROM MAPPER DOES NOT AUTO INITIALISE TO THE CORRECT FIRST INTERNAL BANK
-	; FOR THE RC2014, THE FIRST BANK WILL BE US (CBIOS) IN SLOT 0
-		ld	(hl), $08		; INITIALISE ROM MAPPER TO BANK 8 OF THE ONBOARD ROM
-                call    search_roms_check	; CONSIDERED THE FIRST BANK FOR THE INTERNAL ROM ADDRESS
-                call    z,search_roms_init	; RANGE
-endif
 search_roms_no:
                 bit     7,a
                 jr      z,search_roms_next_slot
