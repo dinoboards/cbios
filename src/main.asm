@@ -876,6 +876,12 @@ endif
                 ld      hl,str_proginfo
                 call    prn_text
 
+		ld	hl, str_subrommsg
+		call	prn_text
+
+		ld	a, (EXBRSA)
+		call	prt_slot_id
+
                 call    search_roms
                 call    H_STKE
                 call    run_basic_roms
@@ -983,29 +989,7 @@ _search_roms_init:
                 ld      hl,str_slot
                 call    prn_text
                 pop     af
-                push    af
-                ld      b,a
-                and     $03
-                add     a,'0'
-                call    chput
-                ld      a,b
-                bit     7,b
-                jr      z,search_roms_init_skip
-                ld      a,'.'
-                call    chput
-                ld      a,b
-                rrca
-                rrca
-                and     $03
-                add     a,'0'
-                call    chput
-search_roms_init_skip:
-                ld      a,$0D
-                call    chput
-                ld      a,$0A
-                call    chput
-
-                pop     af
+		call	prt_slot_id
                 pop     hl
 
                 ; Read the initialization address and initialize the ROM.
@@ -1085,6 +1069,33 @@ search_roms_address:
                 ld      a,b             ; correct.
                 pop     bc
                 ret
+
+; print out slot number in a (x.x)
+prt_slot_id:
+		push    af
+                ld      b,a
+                and     $03
+                add     a,'0'
+                call    chput
+                ld      a,b
+                bit     7,b
+                jr      z,prt_slot_id_skip
+                ld      a,'.'
+                call    chput
+                ld      a,b
+                rrca
+                rrca
+                and     $03
+                add     a,'0'
+                call    chput
+prt_slot_id_skip:
+                ld      a,$0D
+                call    chput
+                ld      a,$0A
+                call    chput
+                pop     af
+		ret
+
 
 ;----------------------
 ; Run any BASIC roms found.
@@ -3152,6 +3163,9 @@ str_proginfo_length:    equ     $ - str_proginfo
 str_slot:
                 ;       [01234567890123456789012345678]
                 db      "Init ROM in slot: ",$00
+
+str_subrommsg:
+		db	"SubRom found in slot: ", 0
 
 str_basic:
                 ;       [01234567890123456789012345678]
