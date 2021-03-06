@@ -29,6 +29,8 @@
 ; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;
 
+	include	"videoinc.asm"
+
 ;--------------------------------
 ; $0041 DISSCR
 ; Function : inhibits the screen display
@@ -67,10 +69,6 @@ wrtvdp:
 	out	(VDP_ADDR), a
 	ld	a, c
 	or	$80
-if RC2014
-	nop
-	nop
-endif
 	out	(VDP_ADDR), a
 	ei
 
@@ -116,6 +114,7 @@ IF VDP = TMS99X8
 	; wait (at least) 29 t-states between VRAM accesses
 	or	0
 ENDIF
+		VDELAY
 	in	a,(VDP_DATA)
 	ret
 
@@ -130,6 +129,7 @@ wrtvrm:
 	push	af
 	call	setwrt
 	pop	af
+	VDELAY
 	out	(VDP_DATA), a
 	ret
 
@@ -145,21 +145,12 @@ IF VDP != TMS99X8
 	out	(VDP_ADDR), a
 	ld	a, 128+14
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
-
 ENDIF
 
 	ld	a, l
 	out	(VDP_ADDR), a
 	ld	a, h
 	and	$3F
-if RC2014
-	nop
-	nop
-endif
 	out	(VDP_ADDR), a
 	ei
 	ret
@@ -175,26 +166,13 @@ IF VDP != TMS99X8
 	xor	a
 	out	(VDP_ADDR), a
 	ld	a, 128+14
-if RC2014
-	nop
-	nop
-endif
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
 ENDIF
-
 	ld	a, l
 	out	(VDP_ADDR), a
 	ld	a, h
 	and	$3F
 	or	$40
-if RC2014
-	nop
-	nop
-endif
 	out	(VDP_ADDR), a
 	ei
 	ret
@@ -224,32 +202,23 @@ filvrm_new:
 	call	nsetwr
 filvrm_cont:
 ENDIF
-	dec	bc
-	inc	c
-	ld	a, b
-	ld	b, c
-	ld	c, a
-	inc	c
 	pop	af
+	EX	AF, AF'
+
 	; Note: Interrupts should be enabled here.
 	;       Penguin Adventure can hang on boot if the interrupt
 	;       comes just after our RET, which is certain if the
 	;       memory block written is large enough.
 filvrm_lp:
+	EX	AF, AF'
 	out	(VDP_DATA), a
-if RC2014
-	nop
-	nop
-endif
-IF VDP = TMS99X8
-	; wait (at least) 29 t-states between VRAM accesses
-	dec b
-	jr	nz, filvrm_lp
-ELSE
-	djnz	filvrm_lp
-ENDIF
-	dec	c
-	jr	nz, filvrm_lp
+	VDELAY
+
+	EX	AF, AF'
+	DEC	BC
+	LD	A, B
+	OR	C
+	JR	NZ, filvrm_lp
 	ret
 
 ;--------------------------------
@@ -286,8 +255,7 @@ ldirmv_lp:
 IF VDP = TMS99X8 OR RC2014
 	; wait (at least) 29 t-states between VRAM accesses
 	ini
-	nop
-	nop
+	VDELAY
 	jp nz, ldirmv_lp
 ELSE
 	inir
@@ -329,11 +297,9 @@ ENDIF
 ldirvm_lp:
 IF VDP = TMS99X8 OR RC2014
 	; wait (at least) 29 t-states between VRAM accesses
+	VDELAY
 	outi
-if RC2014
-	nop
-	nop
-endif
+
 	jp nz, ldirvm_lp
 ELSE
 	otir
@@ -411,12 +377,10 @@ ENDIF
 chgmod_finish_lp:
 	outi
 	ld	a, b
-if RC2014
-	nop
-	nop
-endif
+	VDELAY
 
 	out	(c), d
+	VDELAY
 	inc	d
 	or	a
 	jr	nz, chgmod_finish_lp
@@ -425,26 +389,18 @@ IF VDP != TMS99X8
 	; Setup indirect access to R#8, auto-increment.
 	ld	a, 8
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
+
 	ld	a,$80 + 17
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
+
 	; Write R#8 - R#14.
 	ld	hl, RG8SAV
 	ld	bc, 7 * $100 + VDP_REGS
 
 loop1:
+	VDELAY
 	outi
-if RC2014
-	nop
-	nop
-endif
+
 	jp nz, loop1
 
 	; Skip these registers:
@@ -454,24 +410,16 @@ endif
 	; Setup indirect access to R#18, auto-increment.
 	ld	a, 18
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
+
 	ld	a,$80 + 17
 	out	(VDP_ADDR), a
-if RC2014
-	nop
-	nop
-endif
+
 	; Write R#18 - R#23.
 	ld	bc, 6 * $100 + VDP_REGS
 loop2:
+	VDELAY
 	outi
-if RC2014
-	nop
-	nop
-endif
+
 	jp nz, loop2
 
 ENDIF
@@ -523,7 +471,9 @@ chgclr:
 	call	setwrt
 cclr_lp:
 	pop	af
+	VDELAY
 	out	(VDP_DATA), a
+
 	push	af
 	dec	bc
 	ld	a, b
@@ -610,19 +560,13 @@ ENDIF
 	di
 clrspr_attr_lp:
 	ld	a, e
+	VDELAY
 	out	(VDP_DATA), a		; Y coordinate
 	ld	a, 0
-IF VDP = TMS99X8 OR RC2014
-	nop		; wait (at least) 29 t-states between VRAM accesses
-	nop		; only 2 nops, as ld a, 0 is slow
-ENDIF
+	VDELAY
 	out	(VDP_DATA), a		; X coordinate
 	ld	a, c
-IF VDP = TMS99X8 OR RC2014
-	nop		; wait (at least) 29 t-states between VRAM accesses
-	nop
-	nop
-ENDIF
+	VDELAY
 	out	(VDP_DATA), a		; pattern number
 	inc	c
 	call	gspsiz
@@ -632,11 +576,9 @@ ENDIF
 	inc	c
 clrspr_attr_8:
 	ld	a, d
+	VDELAY
 	out	(VDP_DATA), a		; color
-if RC2014
-	nop
-	nop
-endif
+
 	djnz	clrspr_attr_lp
 	ei
 	ret
@@ -697,6 +639,7 @@ ENDIF
 	; Update VDP regs and VRAM.
 	call	chgclr
 	call	settxt
+
 IF COMPILE_FONT != NO
 	call	init_font
 ENDIF
@@ -783,11 +726,9 @@ ELSE
 	xor	a
 	di
 inigrp_lp:
+	VDELAY
 	out	(VDP_DATA), a
-if RC2014
-	nop
-	nop
-endif
+
 	inc	a
 	jr	nz, inigrp_lp
 	djnz	inigrp_lp
@@ -846,11 +787,9 @@ inimlt_loop2:
 	push	af
 	ld	b, 32
 inimlt_loop3:
+	VDELAY
 	out	(VDP_DATA), a
-if RC2014
-	nop
-	nop
-endif
+
 	inc	a
 	djnz	inimlt_loop3
 	pop	af
@@ -1456,11 +1395,9 @@ bigfil:
 	pop	af
 	di
 bigfil_lp:
+	VDELAY
 	out	(VDP_DATA), a
-if RC2014
-	nop
-	nop
-endif
+
 	djnz	bigfil_lp
 	dec	c
 	jr	nz, bigfil_lp
@@ -1528,17 +1465,11 @@ nset_32k:       push	hl
 	di
 	out	(VDP_ADDR), a		; A16..A14
 	ld	a,$8E
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a		; R#14
 	pop	hl
 	ld	a, l
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a		; A7..A0
 	ret
 
@@ -1553,6 +1484,7 @@ endif
 ; Output:   A = the byte read
 nrdvrm:
 	call	nsetrd
+	VDELAY
 	in	a,(VDP_DATA)
 	ret
 
@@ -1568,6 +1500,7 @@ nwrvrm:
 	push	af
 	call	nsetwr
 	pop	af
+	VDELAY
 	out	(VDP_DATA), a
 	ret
 
@@ -1586,26 +1519,17 @@ vdpsta:
 	; Select desired status register.
 	out	(VDP_ADDR), a
 	ld	a,$80 + 15
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a
 	; Read status register.
 	in	a,(VDP_STAT)
 	push	af
 	; Restore status register 0.
 	xor	a
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a
 	ld	a,$80 + 15
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a
 	ei
 	pop	af
@@ -1631,6 +1555,12 @@ init_vdp:
 	call	wrtvdp
 	ld	bc,$0808		; R#8
 	call	wrtvdp
+
+IF VDP = V9958
+	ld	bc,$0419	; B = $04, C = 25, set wait enable bit for V9958
+	call	wrtvdp		; VDP R#25
+ENDIF
+
 
 	ld	a, 1
 	ld	(CSRY), a
@@ -1732,11 +1662,9 @@ init_sc4:
 	xor	a
 	di
 init_sc4_lp:
+	VDELAY
 	out	(VDP_DATA), a
-if RC2014
-	nop
-	nop
-endif
+
 	inc	a
 	jr	nz, init_sc4_lp
 	djnz	init_sc4_lp
@@ -2196,10 +2124,7 @@ cls_wrtvdp:     di
 	out	(VDP_ADDR), a
 	ld	a, c
 	or	$80
-if RC2014
-	nop
-	nop
-endif
+
 	out	(VDP_ADDR), a
 	ei
 	ret

@@ -29,6 +29,7 @@
 ;
 
                 include "hardware.asm"
+		include	"videoinc.asm"
 
 ; Note: VDP could also be V9958, but for the subrom there is no difference.
 VDP:            equ     V9938
@@ -836,8 +837,10 @@ iniplt:
                 ld      b,32
                 ld      hl,palette_vram_init
 iniplt_loop:    ld      a,(hl)
-                out     (VDP_DATA),a
+                VDELAY
+		out     (VDP_DATA),a
                 inc     hl
+                VDELAY
                 out     (VDP_PALT),a
                 djnz    iniplt_loop
                 pop     hl
@@ -855,7 +858,10 @@ rstplt:
                 ld      bc,16
                 call    wrtvdp          ; set palette index
                 ld      b,32
-rstplt_loop:    in      a,(VDP_DATA)
+rstplt_loop:
+		VDELAY
+		in      a,(VDP_DATA)
+		VDELAY
                 out     (VDP_PALT),a
                 djnz    rstplt_loop
                 ret
@@ -877,8 +883,10 @@ getplt:
                 ld      b,0
                 add     hl,bc
                 call    nsetrd
+		VDELAY
                 in      a,(VDP_DATA)
                 ld      b,a
+		VDELAY
                 in      a,(VDP_DATA)
                 ld      c,a
                 pop     hl
@@ -908,10 +916,14 @@ setplt:
                 call    wrtvdp          ; set palette index
                 pop     bc
                 pop     af
+		VDELAY
                 out     (VDP_PALT),a    ; set red and blue
+		VDELAY
                 out     (VDP_DATA),a
                 ld      a,e
+		VDELAY
                 out     (VDP_PALT),a    ; set green
+		VDELAY
                 out     (VDP_DATA),a
                 ret
 ;

@@ -30,8 +30,9 @@
 ; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;
 
-                include "systemvars.asm"
-                include "hooks.asm"
+	include "systemvars.asm"
+	include "hooks.asm"
+	include	"videoinc.asm"
 
 ;-----------------
 ; A memory address for debug
@@ -815,35 +816,8 @@ endif
 
 logo_done:
         IF VDP != TMS99X8
-                di
-                ld      a,4
-                out     (VDP_ADDR),a
-                ld      a,$8E
-                out     (VDP_ADDR),a
-                xor     a
-                out     (VDP_ADDR),a
-                or      $40
-                out     (VDP_ADDR),a
-                ld      a,$76
-                out     (VDP_DATA),a
-                xor     a
-                out     (VDP_ADDR),a
-                ld      hl,MODE
-                out     (VDP_ADDR),a
-                in      a,(VDP_DATA)
-                cp      $76
-                jr      z,vramsize_128K
-                set     1,(hl)
-                jr      vramsize_done
-vramsize_128K:
-                set     2,(hl)
-vramsize_done:
-                xor     a
-                out     (VDP_ADDR),a
-                ld      a,$8E
-                out     (VDP_ADDR),a
-        ENDIF
-
+		call	vram_detect
+	ENDIF
                 ei
                 ld      b,120
                 call    wait_b
@@ -860,11 +834,13 @@ vramsize_done:
                 ld      (FORCLR),a
                 ld      a,29
                 ld      (LINL32),a
-                call    init32
-        IF VDP != TMS99X8
-                ld      ix,$0141 ; call INIPLT
-                call    extrom
-        ENDIF
+
+        ; IF VDP != TMS99X8
+        ;         ld      ix,$0141 ; call INIPLT
+        ;         call    extrom
+        ; ENDIF
+
+
 if INIT_80COLS
 		ld      a,79
                 ld      (LINL40),a
@@ -3080,6 +3056,7 @@ print_error:
                 ld      bc,$0800
 lp_clearmem:
                 xor     a
+		VDELAY
                 out     (VDP_DATA),a
                 dec     bc
                 ld      a,b
@@ -3090,6 +3067,7 @@ lp_clearmem:
                 ld      bc,$0800
 lp_fontset:
                 ld      a,(hl)
+		VDELAY
                 out     (VDP_DATA),a
                 inc     hl
                 dec     bc
@@ -3107,6 +3085,7 @@ lp_fontset:
 
                 ld      a,(hl)
 lp_errprn:
+		VDELAY
                 out     (VDP_DATA),a
                 inc     hl
                 ld      a,(hl)
@@ -3115,6 +3094,7 @@ lp_errprn:
 
                 ld      a,(de)
 lp_strprn:
+		VDELAY
                 out     (VDP_DATA),a
                 inc     de
                 ld      a,(de)
@@ -3123,8 +3103,45 @@ lp_strprn:
 
                 jp      hang_up_mode
 
+
                 ds      $1bbf - $
                 include "font.asm"
+
+IF VDP != TMS99X8
+vram_detect:
+                di
+                ld      a,4
+                out     (VDP_ADDR),a
+                ld      a,$8E
+                out     (VDP_ADDR),a
+                xor     a
+                out     (VDP_ADDR),a
+                or      $40
+                out     (VDP_ADDR),a
+                ld      a,$76
+		VDELAY
+                out     (VDP_DATA),a
+                xor     a
+                out     (VDP_ADDR),a
+                ld      hl,MODE
+                out     (VDP_ADDR),a
+		VDELAY
+                in      a,(VDP_DATA)
+                cp      $76
+                jr      z,vramsize_128K
+                set     1,(hl)
+                jr      vramsize_done
+vramsize_128K:
+                set     2,(hl)
+vramsize_done:
+                xor     a
+                out     (VDP_ADDR),a
+                ld      a,$8E
+                out     (VDP_ADDR),a
+		RET
+ENDIF
+
+
 ;
 ; This routine is called just after displaying the logo.
 ; This fixes the Mirai sprite garbage bug.
@@ -3137,6 +3154,7 @@ vram_clear:     xor     a
 
                 ld      bc,$4000
 vram_clear_lp:  xor     a
+		VDELAY
                 out     (VDP_DATA),a
                 dec     bc
                 ld      a,b
