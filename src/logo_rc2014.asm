@@ -21,9 +21,10 @@ logo_show:
 	ld	bc,03800h
 	call	5Ch
 
-	; di
-	; halt
-
+	ld	b, 100
+wait_a_sec:
+	halt
+	djnz	wait_a_sec
 	ret
 
 
