@@ -805,7 +805,7 @@ logo_none:
                 ld      (BDRCLR),a
 
 if INIT_80COLS
-		ld      a,79
+		ld      a,80
                 ld      (LINL40),a
                 call    initxt
 else
@@ -842,7 +842,7 @@ logo_done:
 
 
 if INIT_80COLS
-		ld      a,79
+		ld      a,80
                 ld      (LINL40),a
                 call    initxt
 else
