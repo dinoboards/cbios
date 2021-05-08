@@ -1,6 +1,8 @@
 VDELAY	MACRO
 IF RC2014
-	EX	(SP), HL
-	EX	(SP), HL
+	jr	$+2
+	jr	$+2
+	jr	$+2
+	jr	$+2
 ENDIF
 	ENDM
