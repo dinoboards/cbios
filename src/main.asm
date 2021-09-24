@@ -822,6 +822,12 @@ logo_done:
                 ld      b,120
                 call    wait_b
 
+	LD	C, 00100000b
+	ld	a, 0Ah
+	ld	ix, 01F9h ; WRTCLK
+	call	extrom
+	ei
+
         IF VDP != TMS99X8
                 call    vram_clear
         ENDIF
