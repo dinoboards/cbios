@@ -1556,12 +1556,6 @@ init_vdp:
 	ld	bc,$0808		; R#8
 	call	wrtvdp
 
-IF VDP = V9958
-	ld	bc,$0419	; B = $04, C = 25, set wait enable bit for V9958
-	call	wrtvdp		; VDP R#25
-ENDIF
-
-
 	ld	a, 1
 	ld	(CSRY), a
 	ld	(CSRX), a
