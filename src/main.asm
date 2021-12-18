@@ -966,13 +966,13 @@ search_roms_init:
                 ; Initialize the ROM and set up the related system variables.
 _search_roms_init:
                 ; Output a message to show that a ROM is found.
-                push    hl
+		push	hl
                 push    af
-                ld      hl,str_slot
-                call    prn_text
-                pop     af
+		call	prt_rom_page
+
+		pop	af
 		call	prt_slot_id
-                pop     hl
+		pop	hl
 
                 ; Read the initialization address and initialize the ROM.
                 inc     hl
@@ -1077,7 +1077,6 @@ prt_slot_id_skip:
                 call    chput
                 pop     af
 		ret
-
 
 ;----------------------
 ; Run any BASIC roms found.
@@ -3184,9 +3183,8 @@ str_proginfo:
                 db      $0D,$0A,$0D,$0A,$00
 str_proginfo_length:    equ     $ - str_proginfo
 
-str_slot:
-                ;       [01234567890123456789012345678]
-                db      "Init ROM in slot: ",$00
+str_low_bank:	db	"Init (@ $4000) slot: ", $00
+str_high_bank:	db	"Init (@ $8000) slot: ", $00
 
 str_subrommsg:
 		db	"SubRom found in slot: ", 0
@@ -3312,6 +3310,15 @@ unk7E14_text:   db      "unknown@7E14",0
 ; FM Music Macro is calling this unknown routine.
                 ds      $7E6B - $
                 ret
+
+prt_rom_page:
+	ld	a, h
+	cp	80H
+	ld	hl, str_high_bank
+	jp	z, prn_text
+
+	ld	hl, str_low_bank
+	jp	prn_text
 
                 ds      $8000 - $
 
