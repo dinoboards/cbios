@@ -2684,12 +2684,14 @@ keyint:
                 ld      a,3
                 ld      (SCNCNT),a
 
-                ; TODO read joystick triggers and space for TRGFLG
-                xor     a
-                call    gttrig
+		; read space bar status and set trigger
+                call    gttrig_space
                 cpl
                 and     $01
+		or	$F0		; assume joystick buttons not pressed
                 ld      (TRGFLG),a
+
+                ; TODO read joystick triggers 
 
                 call    key_in
                 ; Check whether KEYBUF is empty and if so, decrement REPCNT to
