@@ -2756,6 +2756,19 @@ key_in_lp:
 
                 ld      ix,OLDKEY
                 ld      de,NEWKEY
+
+		ld	a, (CAPST)
+		or	a
+		jr	z, no_caps_lock
+
+                ld      a,(NEWKEY + 6)
+                rrca
+                ld      hl,scode_caps_tbl
+                jr      c,scan_start
+                ld      hl,scode_caps_tbl_shift
+		jr	scan_start
+
+no_caps_lock:
                 ; Use plain or SHIFT version of rows 0-5?
                 ; Note that while we have tables for GRAPH and CODE variants,
                 ; those are not used yet by this routine.
@@ -2820,6 +2833,8 @@ key_store:
 key_chk_fnk1:
                 ; F1-F3
                 ld      a,b
+		cp	$05	; CAPS
+		jr	z, key_caps_lock
                 cp      $03 ; F1
                 jr      nz,key_chk_f2
                 ld      a,$00
@@ -2834,6 +2849,14 @@ key_chk_f3:
                 jr      nz,key_ascii ; return to normal process
                 ld      a,$02
                 jr      put_key_fnk
+
+key_caps_lock:
+		ld	a, (CAPST)
+		cpl
+		ld	(CAPST), a
+		call	chgcap
+		jr	key_store_end2
+
 key_chk_fnk2:
                 ; F4-F5
                 ld      a,b
@@ -2915,6 +2938,11 @@ key_store_nowrap:
                 ret     z
                 ld      (PUTPNT),hl
                 ret
+
+
+		ALIGNCHK $1bbf
+GCTABL:
+                include "font.asm"
 
 
 ;--------------------------------
@@ -3110,10 +3138,6 @@ lp_strprn:
 
                 jp      hang_up_mode
 
-
-                ds      $1bbf - $
-                include "font.asm"
-
 IF VDP != TMS99X8
 vram_detect:
                 di
@@ -3148,7 +3172,6 @@ vramsize_done:
 		RET
 ENDIF
 
-
 ;
 ; This routine is called just after displaying the logo.
 ; This fixes the Mirai sprite garbage bug.
@@ -3171,6 +3194,10 @@ vram_clear_lp:  xor     a
         ENDIF
 
                 include "slot.asm"
+                include "statements.asm"
+
+; FM Music Macro is calling the routine(seems to display message).
+; in : HL(an address of string with null termination)
 
 ;---------------------------------
 ; system messages
@@ -3250,16 +3277,12 @@ vdp_bios:
                 db      $00,$80,$70,$81,$00,$82,$01,$84
                 db      $F5,$87,$00,$40
 
-                include "statements.asm"
+                ALIGNCHK	$6678
 
-; FM Music Macro is calling the routine(seems to display message).
-; in : HL(an address of string with null termination)
-                ds      $6678 - $
                 call    prn_text ; as a substitution
 
-
 ; ????
-                ds      $77CD - $
+                ALIGNCHK	$77CD
                 ret
 
 ; Note: Below are a bunch of routines which do not adhere to any API that

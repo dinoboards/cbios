@@ -41,6 +41,23 @@ scode_tbl_shift:
                 db      "KLMNOPQR"                      ;04
                 db      "STUVWXYZ"                      ;05
 
+scode_caps_tbl:
+; Japanese
+                db      "01234567"                      ;00
+                db      "89-^",$5C,"@[;"                ;01 ($5C = yen)
+                DB      ":],./_AB"                      ;02
+                DB      "CDEFGHIJ"                      ;03
+                DB      "KLMNOPQR"                      ;04
+                DB      "STUVWXYZ"                      ;05
+
+scode_caps_tbl_shift:
+                db      "0!",$22,"#$%&'"                ;00 ($22 = quote)
+                db      "()=~|`{+"                      ;01
+                db      "*}<>?_ab"                      ;02
+                db      "cdefghij"                      ;03
+                db      "klmnopqr"                      ;04
+                db      "stuvwxyz"                      ;05
+
 scode_tbl_graph:
                 db      $0F,$07,$01,$02,$03,$04,$05,$06 ;00
                 db      $0D,$E0,$17,$00,$09,$00,$84,$82 ;01
@@ -66,7 +83,7 @@ scode_tbl_kana:
                 db		$9F,$9C,$92,$EA,$97,$98,$E6,$EF ;03
                 db		$E9,$F8,$F3,$F0,$F7,$9E,$E0,$9D ;04
                 db		$E4,$96,$E5,$EB,$E3,$9B,$FD,$E2 ;05
-                
+
 scode_tbl_caps_kana:
                 db      $DC,$C7,$CC,$B1,$B3,$B4,$B5,$D4 ;00
                 db		$D5,$D6,$CE,$CD,$B0,$DE,$DF,$DA ;01
@@ -74,7 +91,7 @@ scode_tbl_caps_kana:
                 db		$BF,$BC,$B2,$CA,$B7,$B8,$C6,$CF ;03
                 db		$C9,$D8,$D3,$D0,$D7,$BE,$C0,$BD ;04
                 db		$C4,$B6,$C5,$CB,$C3,$BB,$DD,$C2 ;05
-                
+
 scode_tbl_shift_kana:
                 db      $86,$00,$00,$87,$89,$8A,$8B,$8C ;00
                 db		$8D,$8E,$00,$00,$00,$00,$A2,$00 ;01
@@ -83,7 +100,7 @@ scode_tbl_shift_kana:
                 db		$00,$00,$00,$00,$00,$00,$00,$00 ;04
                 db		$00,$00,$00,$00,$00,$00,$00,$8F ;05
 
-                
+
 scode_tbl_shift_caps_kana:
                 db      $A6,$00,$00,$A7,$A9,$AA,$AB,$AC ;00
                 db		$AD,$AE,$00,$00,$00,$00,$A2,$00 ;01

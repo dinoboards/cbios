@@ -218,6 +218,8 @@ ver 0.29  2018-02-18(CET)
             at 50Hz default interrupt frequency
 ver 0.29a 2018-09-23(CEST)
           * Fixed metadata in openMSX configs for EU machines
+ver 0.30  2022-01-06
+          * Implemented caps lock keyboard function
 ```
 
 # Special Thanks

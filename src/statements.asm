@@ -26,7 +26,7 @@
 ;
 
 ; part of ROM Basic
-                ds      $3193 - $
+                ALIGNCHK	$3193
 
 ;-----------------------------
 ;$3193 - Multiply

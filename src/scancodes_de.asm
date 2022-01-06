@@ -40,6 +40,22 @@ scode_tbl_shift:
                 db      "KLMNOPQR"                      ;04
                 db      "STUVWXZY"                      ;05
 
+scode_caps_tbl:
+                db      "01234567"                      ;00
+                db      "89",$E1,$00,"<",$81,"+",$94    ;01
+                DB      $84,"#,.-",$00,"AB"             ;02
+                DB      "CDEFGHIJ"                      ;03
+                DB      "KLMNOPQR"                      ;04
+                DB      "STUVWXZY"                      ;05
+
+scode_caps_tbl_shift:
+                db      "=!",$22,$BF,"$%&/"             ;00
+                db      "()?",$00,">",$9A,"*",$99       ;01
+                db      $8E,"^;:_",$00,"ab"             ;02
+                db      "cdefghij"                      ;03
+                db      "klmnopqr"                      ;04
+                db      "stuvwxzy"                      ;05
+
 scode_tbl_graph:
                 db      $09,$AC,$AB,$BA,$EF,$BD,$F4,$1D ;00
                 db      $EC,$07,$0D,$60,$AE,$01,$F1,$06 ;01

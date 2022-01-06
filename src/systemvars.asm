@@ -1175,3 +1175,14 @@ RG25SAV:         equ     $FFFA
 ; -------
 
 ; vim:ts=8:expandtab:filetype=z8a:syntax=z8a:
+
+; allocate space up to ADDR
+; if already passed ADDR, raise assemble error
+ALIGNCHK	MACRO	ADDR
+
+IF (ADDR-$) >= 0x8000
+.ERROR overflow of code block
+ENDIF
+		ds	ADDR-$
+
+		ENDM

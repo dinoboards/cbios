@@ -40,6 +40,22 @@ scode_tbl_shift:
                 db      "KLMNOPQR"                      ;04
                 db      "STUVWXYZ"                      ;05
 
+scode_caps_tbl:
+                db      "01234567"                      ;00
+                db      "89-=",$5C,"[];"                ;01
+                DB      "'",$9C,",./",$00,"AB"          ;02
+                DB      "CDEFGHIJ"                      ;03
+                DB      "KLMNOPQR"                      ;04
+                DB      "STUVWXYZ"                      ;05
+
+scode_caps_tbl_shift:
+                db      ")!@#$%^&"                      ;00
+                db      "*(_+|{}:"                      ;01
+                db      $22,"~<>?",$00,"ab"             ;02
+                db      "cdefghij"                      ;03
+                db      "klmnopqr"                      ;04
+                db      "stuvwxyz"                      ;05
+
 scode_tbl_graph:
                 db      $09,$AC,$AB,$BA,$EF,$BD,$F4,$FB ;00
                 db      $EC,$07,$17,$F1,$1E,$01,$0D,$06 ;01
@@ -63,7 +79,7 @@ scode_tbl_code:
                 db		$8D,$8B,$8C,$94,$81,$B1,$A1,$91 ;03
                 db		$B3,$B5,$E6,$A4,$A2,$A3,$83,$93 ;04
                 db		$89,$96,$82,$95,$88,$8A,$A0,$85 ;05
-                
+
 scode_tbl_shift_code:
                 db      $D8,$AD,$9E,$BE,$9C,$9D,$00,$00 ;00
                 db		$E2,$80,$00,$00,$00,$E8,$EA,$B6 ;01
