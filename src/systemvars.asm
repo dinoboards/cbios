@@ -1155,6 +1155,10 @@ RG8SAV:         equ     $FFE7
 ; FFF7: slot address of main-rom
 ;?????:         equ     $FFF7
 
+; FFF7: slot address of main-rom
+;reserved:         equ     $FFF8
+;reserved:         equ     $FFF9
+
 ; ------------------
 ; storage of VDP25-27
 ; ------------------
